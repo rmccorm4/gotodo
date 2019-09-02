@@ -1,5 +1,7 @@
 # Task Tracker
 
+Inspired by [@campoy](https://github.com/campoy)'s JustForFunc series #30 video: https://www.youtube.com/watch?v=_jQ3i_fyqGA
+
 ## Setup
 
 1. Download protoc binary and add it to your PATH
