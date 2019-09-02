@@ -2,7 +2,29 @@
 
 Inspired by [@campoy](https://github.com/campoy)'s JustForFunc series #30 video: https://www.youtube.com/watch?v=_jQ3i_fyqGA
 
-## Setup
+## Usage
+
+1. Download the app via: `go get -u github.com/rmccorm4/gotodo/cmd/todo`
+
+2. Start adding tasks
+
+```bash
+todo add Go to the gym
+todo add Write more code
+todo add Sleep
+```
+
+3. List your tasks
+
+```bash
+> todo list
+
+❌ Go to the gym
+❌ Write more code
+❌ Sleep
+```
+
+## Development Setup (Optional)
 
 1. Download protoc binary and add it to your PATH
 
