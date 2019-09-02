@@ -24,6 +24,10 @@ todo add Sleep
 ❌ Sleep
 ```
 
+## Future Work
+* [ ] Ability to check off tasks
+* [ ] Ability to remove tasks
+
 ## Development Setup (Optional)
 
 1. Download protoc binary and add it to your PATH
