@@ -39,6 +39,13 @@ the binary download. Then just add the `bin/protoc` binary to your PATH.
   * `go get -u github.com/golang/protobuf/protoc-gen-go`
   * Add this binary or `${GOBIN}` to your path so `protoc` can find the plugin
 
+3. Generate code stubs
+
+```
+cd todo/
+protoc --go_out=. todo.proto
+```
+
 ## Debugging
 
 If you have `protoc` installed, you can view your protobuf data at 
