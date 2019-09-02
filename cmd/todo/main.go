@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"flag"
 	"fmt"
 	"io"
@@ -29,6 +31,10 @@ func add(text string) error {
 		return fmt.Errorf("Couldn't open file %s: %v", dbPath, err)
 	}
 
+	// Write task length to database to know how many bytes to read in list()
+	if err := gob.NewEncoder(f).Encode(int64(len(bs))); err != nil {
+		return fmt.Errorf("Couldn't encode message: %v", err)
+	}
 	_, err = f.Write(bs)
 	if err != nil {
 		return fmt.Errorf("Couldn't write task to file %s: %v", dbPath, err)
@@ -48,13 +54,28 @@ func list() error {
 	}
 
 	for {
+		if len(bs) == 0 {
+			return nil
+		} else if len(bs) < 4 {
+			return fmt.Errorf("Bytes missing length header, only %d bytes remaining in byte slice.", len(bs))
+		}
+		// Get first 4 bytes containing the length of our message
+		var length int64
+		if err := gob.NewDecoder(bytes.NewReader(bs[:4])).Decode(&length); err != nil {
+			return fmt.Errorf("Couldn't decode message length: %v", err)
+		}
+		// Remove length bytes from the beginning so we can read current task
+		bs = bs[4:]
 		var task todo.Task
-		err = proto.Unmarshal(bs, &task)
+		err = proto.Unmarshal(bs[:length], &task)
 		if err == io.EOF {
+			fmt.Println("Reached EOF.")
 			return nil
 		} else if err != nil {
 			return fmt.Errorf("Couldn't read task: %v", err)
 		}
+		// Remove message bytes from the beginning so we can read next length/task
+		bs = bs[length:]
 
 		if task.Done {
 			fmt.Printf("✔️")
@@ -62,8 +83,8 @@ func list() error {
 			fmt.Printf("❌")
 		}
 		fmt.Printf(" %s\n", task.Text)
-		return nil
 	}
+	return nil
 }
 
 func main() {
@@ -88,6 +109,4 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-
-	fmt.Println("TODO")
 }
